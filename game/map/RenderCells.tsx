@@ -1,7 +1,7 @@
 import {  ImageBackground, Image, ImageProps } from "react-native-web";
 import { AnimatedValues } from "../systems/ContextManager";
 import { useSpring, animated } from 'react-spring';
-import grass from '../assets/grass.png';
+import background from '../assets/grass1.png';
 import { blockSize } from "../settings";
 
 
@@ -38,14 +38,14 @@ export function DefaultCell(params: DefaultCellInterface) {
         height: blockSize,
       }}>
       <Image
-        source={grass}
+        source={background}
         style={{ width: "100%", height: undefined, aspectRatio: 1 }}></Image>
     </animated.div>
   );
 }
 
 export function CustomCell(params: CustomCellInterface) {
-  console.log(params.imgSrc);
+  //console.log(params.imgSrc);
   return (
     <animated.div
       style={{
@@ -79,13 +79,13 @@ export function CustomCell(params: CustomCellInterface) {
         >
           <Image
             source={params.imgSrc}
-            style={{ width: "100%", height: undefined, aspectRatio: 1 }}></Image>
+            style={{ width: "100%", height: undefined, aspectRatio: 1, animationDelay:`${Math.random()*1000}ms`}}></Image>
         </ImageBackground>
         }
         {!params.backgroundImage &&
         <Image
           source={params.imgSrc}
-          style={{ width: "100%", height: undefined, aspectRatio: 1 }}></Image>
+          style={{ width: "100%", height: undefined, aspectRatio: 1, animationDelay:`${Math.random()*1000}ms` }}></Image>
         }
     </animated.div>
   );

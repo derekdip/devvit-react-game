@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useSpring, animated } from 'react-spring';
 import {  MapRendererContext, PositionHandler, PlayerContext, PositionValues } from '../systems/ContextManager';

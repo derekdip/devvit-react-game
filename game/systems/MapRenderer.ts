@@ -19,6 +19,7 @@ export class MapRenderer {
   };
   wholeMap = new Map<number, number>(); //whole map, hashmap {key:cellNum,val:Render Type} render type renders different asset associated to type value
   decorationsMap =new Map<number, number>();
+  private isDropping =false
   private renderedMapSection = new Map<number, React.MutableRefObject<AnimatedValues> | undefined>(); //piece of map
   private cellTypes = new Map<number, Array<React.MutableRefObject<AnimatedValues>>>();
   private cellTypeReferences = new Map<number, Array<React.MutableRefObject<AnimatedValues>>>(); // array of rendered asset references used to update the asset's position
@@ -53,18 +54,26 @@ export class MapRenderer {
       for (let x = this.renderConfig.xOffset; x < this.renderConfig.renderViewWidth; x++) {
         let cellNumAdd = Math.floor(this.currentPlayerPos.x) + x + (y + Math.floor(this.currentPlayerPos.y)) * this.renderConfig.mapWidth;
         this.addCellToRender(cellNumAdd);
-        console.log(cellNumAdd)
 
       }
     }
+    // setTimeout(()=>{
+    //   this.renderConfig.mapWidth=45
+    // },10000)
   }
   deleteWall(num:number){
     this.resetCellXYRef(num)
     this.wholeMap.delete(num)
     this.addCellToRender(num)
   }
+  swapImage(num:number,cellType:number){
+    this.resetCellXYRef(num)
+        this.decorationsMap.set(num,cellType)
+        this.addCellToRender(num)
+  }
   swapRefType(num:number,cellType:number){
     this.resetCellXYRef(num)
+    this.decorationsMap.set(num,cellType)
     this.wholeMap.set(num,cellType)
     this.addCellToRender(num)
   }
@@ -190,6 +199,33 @@ export class MapRenderer {
           this.addCellToRender(cellNumAdd);
         }
       }
+    }
+    if(this.isDropping==false){
+      for(let i =0;i<2;i++){
+        let randomNumX = Math.floor(Math.random()*4.9)-2
+        let randomNumY = Math.floor(Math.random()*4.9)-2
+        this.swapImage(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,8)
+        // this.resetCellXYRef(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth)
+        // this.decorationsMap.set(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,2)
+        // this.addCellToRender(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth)
+        setTimeout(()=>{
+          this.swapRefType(nextPosInts.x+randomNumX-1  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,7)
+          this.swapRefType(nextPosInts.x+randomNumX+1  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,7)
+          this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY+1) * this.renderConfig.mapWidth,7)
+          this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY-1) * this.renderConfig.mapWidth,7)
+          this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,7)
+          this.isDropping=false
+        },2000)
+      }
+      this.isDropping=true
+      // setTimeout(()=>{
+      //   this.swapRefType(nextPosInts.x-1  + (nextPosInts.y) * this.renderConfig.mapWidth,7)
+      //   this.swapRefType(nextPosInts.x+1  + (nextPosInts.y) * this.renderConfig.mapWidth,7)
+      //   this.swapRefType(nextPosInts.x  + (nextPosInts.y+1) * this.renderConfig.mapWidth,7)
+      //   this.swapRefType(nextPosInts.x  + (nextPosInts.y-1) * this.renderConfig.mapWidth,7)
+      //   this.swapRefType(nextPosInts.x  + (nextPosInts.y) * this.renderConfig.mapWidth,7)
+      //   this.isDropping=false
+      // },2000)
     }
     // console.log("next posx: "+nextPosInts.x)
     //   console.log("playerCurrentPos"+ Math.floor(this.currentPlayerPos.x))

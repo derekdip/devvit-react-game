@@ -4,7 +4,7 @@ import { sendMessageToWebview } from './utils/utils.js';
 import { WebviewToBlockMessage } from '../game/shared.js';
 import { WEBVIEW_ID } from './constants.js';
 import { Preview } from './components/Preview.js';
-import { getPokemonByName } from './core/pokeapi.js';
+console.log("here!!!")
 
 Devvit.addSettings([
   // Just here as an example
@@ -34,7 +34,7 @@ Devvit.addMenuItem({
     const subreddit = await reddit.getCurrentSubreddit();
     const post = await reddit.submitPost({
       // Title of the post. You'll want to update!
-      title: 'My first experience post',
+      title: 'React Game',
       subredditName: subreddit.name,
       preview: <Preview />,
     });
@@ -71,18 +71,15 @@ Devvit.addCustomPostType({
                     },
                   });
                   break;
-                case 'GET_POKEMON_REQUEST':
-                  context.ui.showToast({ text: `Received message: ${JSON.stringify(data)}` });
-                  const pokemon = await getPokemonByName(data.payload.name);
-
+                case 'GET_USER_DATA_REQUEST':
+                  const { reddit, ui } = context;
+                  const redditUser = await reddit.getAppUser()
+                  console.log("sending data: "+redditUser.username)
                   sendMessageToWebview(context, {
-                    type: 'GET_POKEMON_RESPONSE',
+                    type: 'GET_USER_DATA_RESPONSE',
                     payload: {
-                      name: pokemon.name,
-                      number: pokemon.id,
-                      // Note that we don't allow outside images on Reddit if
-                      // wanted to get the sprite. Please reach out to support
-                      // if you need this for your app!
+                      name:`${redditUser.username}`,
+                      number: 1,
                     },
                   });
                   break;

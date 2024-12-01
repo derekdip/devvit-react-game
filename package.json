@@ -8,7 +8,7 @@
     "dev:game": "vite build --watch",
     "dev:devvit": "devvit playtest test_alpha_game",
     "dev": "concurrently -p \"[{name}]\" -n \"DEVVIT,GAME\" -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\" \"npm run dev:devvit\" \"npm run dev:game\" --restart-tries 30",
-    "vite": "vite",
+    "vite": "vite --host",
     "upload": "devvit upload"
   },
   "dependencies": {

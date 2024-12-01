@@ -1,26 +1,22 @@
-import { Page } from './shared';
-import { PokemonPage } from './pages/PokemonPage';
+import { createDefaultPayloadBasedOnType, createDefaultPayloadGetUserData, Page, Payload } from './shared';
 import { HomePage } from './pages/HomePage';
 import { usePage } from './hooks/usePage';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { sendToDevvit } from './utils';
 import { useDevvitListener } from './hooks/useDevvitListener';
+import { animated, useSpring } from 'react-spring';
 
 const getPage = (page: Page, { postId }: { postId: string }) => {
   switch (page) {
     case 'home':
       return <HomePage postId={postId} />;
-    case 'pokemon':
-      return <PokemonPage />;
     default:
       throw new Error(`Unknown page: ${page satisfies never}`);
   }
 };
 
 export const App = () => {
-  //const [postId, setPostId] = useState('');
-  const page = usePage();
-  const initData = useDevvitListener('INIT_RESPONSE');
+  let page = usePage()
   // Function to handle touch events and prevent their default behavior
   const preventTouch = (e: TouchEvent) => {
     e.preventDefault(); // Disable default touch behavior

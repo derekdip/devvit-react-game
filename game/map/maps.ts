@@ -37,8 +37,11 @@ export const initialMapData = {
     "table/tile_1_0.png": [1011],
     "table/tile_1_1.png": [1012],
     "table/tile_1_2.png": [1013],
+    "grass.gif":[],
+    "hacking_typing.gif":[]
   },
   decorations:{
+    "table/tile_1_1.png": [0],
     "table/tile_0_0.png": [966],
     "table/tile_0_1.png": [967],
     "table/tile_0_2.png": [968],
