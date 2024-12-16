@@ -24,8 +24,14 @@ import sidesImage from '../assets/walls/sides.png';
 import backgroundImage from '../assets/grass1.png';
 import glitch from '../assets/grass.gif'
 import hacking from "../assets/hacking_typing.gif"
-import point from '../assets/point.png'
+import point from '../assets/point.gif'
 import background from "../assets/background.png"
+import mud1 from "../assets/mud1.png"
+import mud2 from "../assets/mud2.png"
+import mud3 from "../assets/mud3.png"
+import mud4 from "../assets/mud4.png"
+import water from "../assets/water.gif"
+
 
 import tile_0_1 from '../assets/output/tile_0_1.png'
 import tile_0_2 from '../assets/output/tile_0_2.png'
@@ -67,7 +73,12 @@ const images:im = {
   "grass1.png": backgroundImage,
   "grass.gif": glitch,
   "hacking_typing.gif": hacking,
-  "point.png":point,
+  "point.gif":point,
+  "mud1.png":mud1,
+  "mud2.png":mud2,
+  "mud3.png":mud3,
+  "mud4.png":mud4,
+  "water.gif":water,
 
   "background.png":background,
 
@@ -132,7 +143,7 @@ export default function Map() {
       if(wallType=="background.png"){
         maxRenders=200
       }
-      if(wallType=="point.png"){
+      if(wallType=="point.gif"){
         maxRenders=200
       }
       // console.log(wallType);
@@ -187,6 +198,33 @@ export default function Map() {
       }
       wallIndex += 1;
     }
+    //keeps the wall index the same so different images are in the same type
+    currentMapRenderer.addTypeCellRef(wallIndex);
+    for (let mixType in mapInfo.mix) {
+      let cellRefs = currentMapRenderer.getTypeCellRef(wallIndex);
+      //console.log(images[decorationType]);
+      if (cellRefs) {
+        for (let i = 0; i < 60; i++) {
+          const [{ x, y }, set] = useSpring(() => ({
+            x: 0,
+            y: 0,
+            config: { duration:1 }, // Custom spring config for smooth resizing
+          }));
+          const animatedValue = {x:x,y:y,setValue:set}
+
+          //render walls and store their references
+          const ref = useRef(animatedValue);
+          mapCells.push(<CustomCell zIndex={wallIndex} cellRef={ref} imgSrc={images[mixType]} />);
+          cellRefs.push(ref);
+        }
+      }
+    }
+    function shuffleArray(arr:any) {
+      return arr.sort(() => Math.random() - 0.5);
+    }
+    let cellRefs = currentMapRenderer.getTypeCellRef(wallIndex);
+    cellRefs=shuffleArray(cellRefs)
+    
 
     let defaultCellRefs = currentMapRenderer.getTypeCellRef(0);
     if (defaultCellRefs) {
@@ -232,6 +270,7 @@ export default function Map() {
           if(currentMapRenderer.hasRendered==false){
             currentMapRenderer.initializeRefs()
             currentMapRenderer.hasRendered=true
+            currentMapRenderer.startGame()
           }
         },2000)
         

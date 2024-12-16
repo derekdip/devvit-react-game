@@ -96,7 +96,35 @@ export class MapRenderer {
     
   }
   startGame(){
-    
+    let gameOverID =setInterval(()=>{
+    console.log(this.incidentPoint)
+    let nextPosInts = { x: Math.floor(this.currentPlayerPos.x), y: Math.floor(this.currentPlayerPos.y) }; 
+    if(this.isDropping==false){
+      for(let i =0;i<3;i++){
+        let randomNumX = Math.floor(Math.random()*4.9)-2
+        let randomNumY = Math.floor(Math.random()*4.9)-2
+        this.swapImage(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,24)
+        this.incidentPoint[i] ={x:nextPosInts.x+randomNumX,y:nextPosInts.y+randomNumY} 
+        // this.resetCellXYRef(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth)
+        // this.decorationsMap.set(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,2)
+        // this.addCellToRender(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth)
+        setTimeout(()=>{
+          this.swapRefType(nextPosInts.x+randomNumX-1  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,25)
+          this.swapRefType(nextPosInts.x+randomNumX+1  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,25)
+          this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY+1) * this.renderConfig.mapWidth,25)
+          this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY-1) * this.renderConfig.mapWidth,25)
+          this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,25)
+          if(this.wholeMap.get(this.positionToCellNum({x:this.currentPlayerPos.x,y:this.currentPlayerPos.y}))!=undefined ){
+            console.log("game has ended")
+            clearInterval(gameOverID)
+            sendToDevvit({ type: 'GAME_ENDED',payload: {player_points_earned:this.pointsEarned} });
+          }
+          this.isDropping=false
+        },2000)
+      }
+      this.isDropping=true
+    }
+  },3000)
   }
   updateMapPosition(direction: Array<number>, currentPlayerPosRef: Position,deltaTime?:number, dashDistance?:number) {
     //----------player position is broadcast to other photon players at the end of this function ----------------//
@@ -240,46 +268,6 @@ export class MapRenderer {
       this.pointMap.set(this.positionToCellNum({x:nextPosInts.x,y:nextPosInts.y}),true)
       this.swapImage(nextPosInts.x + (nextPosInts.y) * this.renderConfig.mapWidth,6)
     }
-    
-    if(this.isDropping==false){
-      for(let i =0;i<3;i++){
-        let randomNumX = Math.floor(Math.random()*4.9)-2
-        let randomNumY = Math.floor(Math.random()*4.9)-2
-        this.swapImage(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,7)
-        this.incidentPoint[i] ={x:nextPosInts.x+randomNumX,y:nextPosInts.y+randomNumY} 
-        // this.resetCellXYRef(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth)
-        // this.decorationsMap.set(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,2)
-        // this.addCellToRender(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth)
-        setTimeout(()=>{
-          this.swapRefType(nextPosInts.x+randomNumX-1  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,7)
-          this.swapRefType(nextPosInts.x+randomNumX+1  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,7)
-          this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY+1) * this.renderConfig.mapWidth,7)
-          this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY-1) * this.renderConfig.mapWidth,7)
-          this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,7)
-          console.log(this.currentPlayerPos.x)
-          console.log(this.currentPlayerPos.y)
-          console.log(this.positionToCellNum({x:this.currentPlayerPos.x,y:this.currentPlayerPos.y}))
-          console.log(this.wholeMap.get(this.positionToCellNum({x:this.currentPlayerPos.x,y:this.currentPlayerPos.y})))
-          if(this.wholeMap.get(this.positionToCellNum({x:this.currentPlayerPos.x,y:this.currentPlayerPos.y}))!=undefined ){
-            console.log("game has ended")
-            sendToDevvit({ type: 'GAME_ENDED',payload: {player_points_earned:this.pointsEarned} });
-          }
-          this.isDropping=false
-        },2000)
-      }
-      this.isDropping=true
-      // setTimeout(()=>{
-      //   this.swapRefType(nextPosInts.x-1  + (nextPosInts.y) * this.renderConfig.mapWidth,7)
-      //   this.swapRefType(nextPosInts.x+1  + (nextPosInts.y) * this.renderConfig.mapWidth,7)
-      //   this.swapRefType(nextPosInts.x  + (nextPosInts.y+1) * this.renderConfig.mapWidth,7)
-      //   this.swapRefType(nextPosInts.x  + (nextPosInts.y-1) * this.renderConfig.mapWidth,7)
-      //   this.swapRefType(nextPosInts.x  + (nextPosInts.y) * this.renderConfig.mapWidth,7)
-      //   this.isDropping=false
-      // },2000)
-    }
-    // console.log("next posx: "+nextPosInts.x)
-    //   console.log("playerCurrentPos"+ Math.floor(this.currentPlayerPos.x))
-    //   console.log(Math.abs(nextPosInts.x - Math.floor(this.currentPlayerPos.x)))
     for (let [key, value] of this.renderedMapSection) {
       if (!inViewCells.includes(key)) {
         // console.log("mapWidth: "+this.renderConfig.mapWidth+" value:  "+key+" x: "+this.cellNumToPosition(key).x+" y: "+this.cellNumToPosition(key).y)

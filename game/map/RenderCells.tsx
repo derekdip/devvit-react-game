@@ -2,7 +2,7 @@ import {  ImageBackground, Image, ImageProps } from "react-native-web";
 import { AnimatedValues } from "../systems/ContextManager";
 import { useSpring, animated } from 'react-spring';
 import background from '../assets/background.png';
-import point from '../assets/point.png'
+import point from '../assets/point.gif'
 import { blockSize } from "../settings";
 
 
