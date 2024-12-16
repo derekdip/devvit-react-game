@@ -1,7 +1,8 @@
 import {  ImageBackground, Image, ImageProps } from "react-native-web";
 import { AnimatedValues } from "../systems/ContextManager";
 import { useSpring, animated } from 'react-spring';
-import background from '../assets/grass1.png';
+import background from '../assets/background.png';
+import point from '../assets/point.png'
 import { blockSize } from "../settings";
 
 
@@ -11,9 +12,36 @@ interface DefaultCellInterface {
   cellRef?: React.MutableRefObject<AnimatedValues>;
 }
 interface CustomCellInterface {
+  zIndex:number,
   cellRef?: React.MutableRefObject<AnimatedValues>;
   imgSrc:ImageProps["source"]
   backgroundImage?:ImageProps["source"]
+}
+export function PointCell(params: DefaultCellInterface) {
+  return (
+    <animated.div
+      style={{
+        position: "absolute",
+        zIndex: 10,
+        left: 0,
+        top: 0,
+        x: params.cellRef
+        ? params.cellRef.current.x
+        : undefined,
+        y: params.cellRef
+        ? params.cellRef.current.y
+        : undefined,
+        // transform: params.cellRef
+        //   ? params.cellRef.current.getTranslateTransform()
+        //   : undefined,
+        width: blockSize,
+        height: blockSize,
+      }}>
+      <Image
+        source={point}
+        style={{ width: "100%", height: undefined, aspectRatio: 1 }}></Image>
+    </animated.div>
+  );
 }
 
 export function DefaultCell(params: DefaultCellInterface) {
@@ -21,7 +49,6 @@ export function DefaultCell(params: DefaultCellInterface) {
     <animated.div
       style={{
         position: "absolute",
-        backgroundColor: "#6bfc03",
         zIndex: 10,
         left: 0,
         top: 0,
@@ -50,8 +77,7 @@ export function CustomCell(params: CustomCellInterface) {
     <animated.div
       style={{
         position: "absolute",
-        backgroundColor: "green",
-        zIndex: 10,
+        zIndex: params.zIndex,
         left: 0,
         top: 0,
         x: params.cellRef

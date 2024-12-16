@@ -68,7 +68,8 @@ export const useDevvitListenerAnimated = <T extends BlocksToWebviewMessage['type
 
       const message = ev.data.data.message;
       if (message.type === eventType) {
-        set({ ...message.payload as any});
+        console.log(message.payload)
+        set(message.payload as any);
       }
     };
 

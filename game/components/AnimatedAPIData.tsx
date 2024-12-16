@@ -4,7 +4,7 @@ import { useDevvitListenerAnimated } from "../hooks/useDevvitListener";
 import { createDefaultPayloadGetUserData } from "../shared";
 import { sendToDevvit } from "../utils";
 
-function Example(){
+export function Example(){
     const tempPayload = createDefaultPayloadGetUserData()
     const [data,setData] = useSpring(() => (
         {...tempPayload, config: { duration:1 }}
@@ -15,8 +15,30 @@ function Example(){
         sendToDevvit({ type: 'GET_USER_DATA_REQUEST' });
     }, []);
     return(
+        <>
+        <div>
+            <animated.text style={{color:"yellow"}} >
+                {data.name}
+            </animated.text>
+            
+           
+        </div>
+        <div>
         <animated.text style={{color:"yellow"}} >
-        {data.name}
-       </animated.text>
+                {data.team1_name}
+            </animated.text>
+            {/* <animated.text style={{color:"yellow"}} >
+                {data.team1_points}
+            </animated.text> */}
+        </div>
+        <div>
+        <animated.text style={{color:"yellow"}} >
+                {data.team2_name}
+            </animated.text>
+            {/* <animated.text style={{color:"yellow"}} >
+                {data.team2_points}
+            </animated.text> */}
+        </div>
+       </>
     )
 }

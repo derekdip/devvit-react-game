@@ -17,10 +17,6 @@ export interface Position{
   values: PositionValues,
   animatedValues: AnimatedValues,
 }
-export interface GameSession {
-  complete: string;
-  speedMultiplier?: number;
-}
 export interface VisualProperties {
   face: number;
   balloonColor: string;
@@ -39,34 +35,33 @@ export class PositionHandler {
     }
   }
 }
-export interface ControlsInterface{
-  fireButtonEnabled:boolean
-  joyStickEnabled:boolean
-  isMatchStart:boolean
-  setFireButtonEnabled:Function
-  setJoyStickEnabled:Function
-  setIsMatchStart:Function
-}
-export interface ClientVisualsInterface{
-  visuals: VisualProperties
-  setVisuals(params:VisualProperties):void
-}
-export interface TimerInterface{
-  start:boolean
-  setStart:Function
-}
 export interface WindowSizeInterface{
   windowWidth: number,
   windowHeight: number,
   updateWindowSize: Function
 }
-//new MapRenderer({ x: 0, y: 0 }, 0, 0)
+
+export interface GameUIParams {
+  team1_name:string,
+  team2_name:string, 
+  team1_points:SpringValue<number>, 
+  team2_points:SpringValue<number>,
+}
+export interface Player {
+  team: string
+  points: SpringValue<number>
+}
+export interface Team {
+  name: string;
+  totalPoints: number;
+}
+
+
+
 export const MapRendererContext = createContext<MapRenderer|undefined>(undefined) //Map renderer
 export const MapContext = createContext<[MapData, Function]>([initialMapData, () => {}]); //Map information: size, walls, start, end
 
 export const PlayerContext = createContext<PositionHandler|undefined>(undefined); //Local Player info, animation/network interface
 export const VisualContext = createContext<[VisualProperties, Function]>([{ face: 0, balloonColor: "#FF0000FF", blockColor: "yellow" },() => {},]); //Local Player aesthetic
 
-export const GameStateContext = createContext<[GameSession, Function]>([{ complete: "false" }, () => {}]); //game state
-export const TimerContext = createContext<TimerInterface>({start:false,setStart:Function})
 export const WindowSize = createContext<WindowSizeInterface>({windowWidth:0,windowHeight:0,updateWindowSize:Function})

@@ -6,42 +6,98 @@ import {
   PlayerContext,
   VisualContext,
 } from "../systems/ContextManager";
-import { CustomCell, DefaultCell } from "./RenderCells";
+import { CustomCell, DefaultCell, PointCell } from "./RenderCells";
 import { useSpring } from "react-spring";
 
 import topImage from '../assets/walls/top.png';
 import bottomImage from '../assets/walls/bottom.png';
 import sidesImage from '../assets/walls/sides.png';
-import tile_0_0 from '../assets/table/tile_0_0.png';
-import tile_0_1 from '../assets/table/tile_0_1.png';
-import tile_0_2 from '../assets/table/tile_0_2.png';
-import tile_1_0 from '../assets/table/tile_1_0.png';
-import tile_1_1 from '../assets/table/tile_1_1.png';
-import tile_1_2 from '../assets/table/tile_1_2.png';
-import tile_2_0 from '../assets/table/tile_2_0.png';
-import tile_2_1 from '../assets/table/tile_2_1.png';
-import tile_2_2 from '../assets/table/tile_2_2.png';
+// import tile_0_0 from '../assets/table/tile_0_0.png';
+// import tile_0_1 from '../assets/table/tile_0_1.png';
+// import tile_0_2 from '../assets/table/tile_0_2.png';
+// import tile_1_0 from '../assets/table/tile_1_0.png';
+// import tile_1_1 from '../assets/table/tile_1_1.png';
+// import tile_1_2 from '../assets/table/tile_1_2.png';
+// import tile_2_0 from '../assets/table/tile_2_0.png';
+// import tile_2_1 from '../assets/table/tile_2_1.png';
+// import tile_2_2 from '../assets/table/tile_2_2.png';
 import backgroundImage from '../assets/grass1.png';
 import glitch from '../assets/grass.gif'
 import hacking from "../assets/hacking_typing.gif"
+import point from '../assets/point.png'
+import background from "../assets/background.png"
+
+import tile_0_1 from '../assets/output/tile_0_1.png'
+import tile_0_2 from '../assets/output/tile_0_2.png'
+import tile_0_3 from '../assets/output/tile_0_3.png'
+import tile_1_0 from '../assets/output/tile_1_0.png'
+import tile_1_2 from '../assets/output/tile_1_2.png'
+import tile_1_1 from '../assets/output/tile_1_1.png'
+import tile_1_3 from '../assets/output/tile_1_3.png'
+import tile_1_4 from '../assets/output/tile_1_4.png'
+import tile_2_0 from '../assets/output/tile_2_0.png'
+import tile_2_1 from '../assets/output/tile_2_1.png'
+import tile_2_2 from '../assets/output/tile_2_2.png'
+import tile_2_3 from '../assets/output/tile_2_3.png'
+import tile_2_4 from '../assets/output/tile_2_4.png'
+import tile_3_0 from '../assets/output/tile_3_0.png'
+import tile_3_1 from '../assets/output/tile_3_1.png'
+import tile_3_2 from '../assets/output/tile_3_2.png'
+import tile_3_3 from '../assets/output/tile_3_3.png'
+import tile_3_4 from '../assets/output/tile_3_4.png'
+import tile_4_1 from '../assets/output/tile_4_1.png'
+import tile_4_2 from '../assets/output/tile_4_2.png'
+import tile_4_3 from '../assets/output/tile_4_3.png'
+
 
 // Define your images object using the imported variables
 const images:im = {
   "walls/top.png": topImage,
   "walls/bottom.png": bottomImage,
   "walls/sides.png": sidesImage,
-  "table/tile_0_0.png": tile_0_0,
-  "table/tile_0_1.png": tile_0_1,
-  "table/tile_0_2.png": tile_0_2,
-  "table/tile_1_0.png": tile_1_0,
-  "table/tile_1_1.png": tile_1_1,
-  "table/tile_1_2.png": tile_1_2,
-  "table/tile_2_0.png": tile_2_0,
-  "table/tile_2_1.png": tile_2_1,
-  "table/tile_2_2.png": tile_2_2,
-  "grass": backgroundImage,
+  // "table/tile_0_0.png": tile_0_0,
+  // "table/tile_0_1.png": tile_0_1,
+  // "table/tile_0_2.png": tile_0_2,
+  // "table/tile_1_0.png": tile_1_0,
+  // "table/tile_1_1.png": tile_1_1,
+  // "table/tile_1_2.png": tile_1_2,
+  // "table/tile_2_0.png": tile_2_0,
+  // "table/tile_2_1.png": tile_2_1,
+  // "table/tile_2_2.png": tile_2_2,
+  "grass1.png": backgroundImage,
   "grass.gif": glitch,
-  "hacking_typing.gif": hacking
+  "hacking_typing.gif": hacking,
+  "point.png":point,
+
+  "background.png":background,
+
+  "output/tile_0_1.png": tile_0_1 ,
+  "output/tile_0_2.png": tile_0_2,
+  "output/tile_0_3.png": tile_0_3,
+  "output/tile_1_0.png": tile_1_0,
+  "output/tile_1_1.png": tile_1_1,
+  "output/tile_1_2.png": tile_1_2,
+  "output/tile_1_3.png": tile_1_3,
+  "output/tile_1_4.png": tile_1_4,
+
+  "output/tile_2_0.png": tile_2_0,
+  "output/tile_2_1.png": tile_2_1,
+  "output/tile_2_2.png": tile_2_2,
+  "output/tile_2_3.png": tile_2_3,
+  "output/tile_2_4.png": tile_2_4,
+  
+  "output/tile_3_0.png": tile_3_0,
+  "output/tile_3_1.png": tile_3_1,
+  "output/tile_3_2.png": tile_3_2,
+  "output/tile_3_3.png": tile_3_3,
+  "output/tile_3_4.png": tile_3_4,
+
+  "output/tile_4_1.png": tile_4_1,
+  "output/tile_4_2.png": tile_4_2,
+  "output/tile_4_3.png": tile_4_3
+  
+  
+  
 };
 
 interface im {
@@ -61,7 +117,7 @@ export default function Map() {
     //gets map info from Photon and renders cells
     let mapCells: Array<JSX.Element> = []; //renders cells, but cell positions are changed with user input
     const deferredCounter = useDeferredValue<Array<JSX.Element>>(mapCells); //since we are rendering a lot of images we want to eventually render all of them so this helps it render whatever is updated
-    currentMapRenderer.renderConfig.mapWidth = 30;
+    currentMapRenderer.renderConfig.mapWidth = 45;
     currentMapRenderer.renderConfig.mapHeight =45;
 
     //custom map cells->
@@ -71,6 +127,12 @@ export default function Map() {
       console.log(wallType)
       if(wallType=="grass.gif"){
         console.log("setting max = 200")
+        maxRenders=200
+      }
+      if(wallType=="background.png"){
+        maxRenders=200
+      }
+      if(wallType=="point.png"){
         maxRenders=200
       }
       // console.log(wallType);
@@ -92,7 +154,7 @@ export default function Map() {
 
           //render walls and store their references
           const ref = useRef(animatedValue);
-          mapCells.push(<CustomCell cellRef={ref} imgSrc={images[wallType]} />);
+          mapCells.push(<CustomCell zIndex={wallIndex} cellRef={ref} imgSrc={images[wallType]} />);
           cellRefs.push(ref);
         }
       }
@@ -109,17 +171,17 @@ export default function Map() {
       let cellRefs = currentMapRenderer.getTypeCellRef(wallIndex);
       //console.log(images[decorationType]);
       if (cellRefs) {
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 60; i++) {
           const [{ x, y }, set] = useSpring(() => ({
             x: 0,
             y: 0,
-            config: { tension: 170, friction: 26 }, // Custom spring config for smooth resizing
+            config: { duration:1 }, // Custom spring config for smooth resizing
           }));
           const animatedValue = {x:x,y:y,setValue:set}
 
           //render walls and store their references
           const ref = useRef(animatedValue);
-          mapCells.push(<CustomCell cellRef={ref} imgSrc={images[decorationType]} />);
+          mapCells.push(<CustomCell zIndex={wallIndex} cellRef={ref} imgSrc={images[decorationType]} />);
           cellRefs.push(ref);
         }
       }
@@ -140,6 +202,23 @@ export default function Map() {
           const ref = useRef(animatedValue);
         mapCells.push(<DefaultCell cellRef={ref} />);
         defaultCellRefs.push(ref);
+      }
+    }
+    currentMapRenderer.addTypeCellRef(-1);
+    let pointCellRefs = currentMapRenderer.getTypeCellRef(-1);
+    if (pointCellRefs) {
+      for (let i = 0; i < 300; i++) {
+        const [{ x, y }, set] = useSpring(() => ({
+            x: 0,
+            y: 0,
+            config: { duration:1 }, // Custom spring config for smooth resizing
+          }));
+          const animatedValue = {x:x,y:y,setValue:set}
+
+          //render walls and store their references
+          const ref = useRef(animatedValue);
+        mapCells.push(<PointCell cellRef={ref} />);
+        pointCellRefs.push(ref);
       }
     }
     // for(let wall of mazeData.wallVals){
@@ -165,8 +244,6 @@ export default function Map() {
 
 
   return (
-    <View>
       <RenderMap />
-    </View>
   );
 }

@@ -1,4 +1,5 @@
 import { userDisplacement, blockSize } from "../settings";
+import { sendToDevvit } from "../utils";
 import { Position, AnimatedValues, PositionValues } from "./ContextManager";
 
 //Map renderer renders a piece of the map surrounding the player by pooling initialized assets then moving them in front of the player
@@ -8,6 +9,7 @@ import { Position, AnimatedValues, PositionValues } from "./ContextManager";
 
 export class MapRenderer {
   public hasRendered=false
+  private startingPlayerPos: PositionValues;
   private currentPlayerPos: PositionValues;
   renderConfig = {
     renderViewWidth: 0,
@@ -23,13 +25,19 @@ export class MapRenderer {
   private renderedMapSection = new Map<number, React.MutableRefObject<AnimatedValues> | undefined>(); //piece of map
   private cellTypes = new Map<number, Array<React.MutableRefObject<AnimatedValues>>>();
   private cellTypeReferences = new Map<number, Array<React.MutableRefObject<AnimatedValues>>>(); // array of rendered asset references used to update the asset's position
+  private pointMap = new Map<number,boolean>()
+  public pointsEarned =0;
+  private incidentPoint = [{x:0,y:0},{x:0,y:0}]
+  public increasePoints:Function
   mapRenderRef: AnimatedValues;
-  constructor(initialPlayerPos: PositionValues, rendererViewWidth: number, rendererViewHeight: number, mapRenderRef: AnimatedValues) {
-    this.currentPlayerPos = initialPlayerPos;
+  constructor(initialPlayerPos: PositionValues, rendererViewWidth: number, rendererViewHeight: number, mapRenderRef: AnimatedValues, increasePoints:Function) {
+    this.startingPlayerPos = initialPlayerPos;
+    this.currentPlayerPos = initialPlayerPos
     this.renderConfig.renderViewWidth = rendererViewWidth;
     this.renderConfig.renderViewHeight = rendererViewHeight;
     this.mapRenderRef = mapRenderRef;
     this.cellTypeReferences.set(0, []); //**default background rendering
+    this.increasePoints = increasePoints
   }
   addTypeCellRef(key: number) {
     this.cellTypeReferences.set(key, []);
@@ -52,7 +60,7 @@ export class MapRenderer {
     console.log("cells initialized to render")
     for (let y = this.renderConfig.yOffset; y < this.renderConfig.renderViewHeight; y++) {
       for (let x = this.renderConfig.xOffset; x < this.renderConfig.renderViewWidth; x++) {
-        let cellNumAdd = Math.floor(this.currentPlayerPos.x) + x + (y + Math.floor(this.currentPlayerPos.y)) * this.renderConfig.mapWidth;
+        let cellNumAdd = Math.floor(this.startingPlayerPos.x) + x + (y + Math.floor(this.startingPlayerPos.y)) * this.renderConfig.mapWidth;
         this.addCellToRender(cellNumAdd);
 
       }
@@ -60,6 +68,9 @@ export class MapRenderer {
     // setTimeout(()=>{
     //   this.renderConfig.mapWidth=45
     // },10000)
+  }
+  updatePosition(pos: PositionValues){
+    this.currentPlayerPos=pos
   }
   deleteWall(num:number){
     this.resetCellXYRef(num)
@@ -84,6 +95,9 @@ export class MapRenderer {
   dash(angle:number){
     
   }
+  startGame(){
+    
+  }
   updateMapPosition(direction: Array<number>, currentPlayerPosRef: Position,deltaTime?:number, dashDistance?:number) {
     //----------player position is broadcast to other photon players at the end of this function ----------------//
     let newX = currentPlayerPosRef.values.x;
@@ -100,14 +114,19 @@ export class MapRenderer {
       deltaDistance=dashDistance
     }
     
-
-    if (newX != 0 && newY != 0) {
-      newX = currentPlayerPosRef.values.x + deltaDistance * direction[0] * 0.7;
-      newY = currentPlayerPosRef.values.y + deltaDistance * direction[1] * 0.7;
-    } else {
-      newX = currentPlayerPosRef.values.x + deltaDistance * direction[0];
-      newY = currentPlayerPosRef.values.y + deltaDistance * direction[1];
+    function roundToDecimal( value:number , decimals:number) {
+      const factor = Math.pow(10, decimals);
+      return Math.round(value * factor) / factor;
     }
+    if (newX != 0 && newY != 0) {
+      newX = roundToDecimal(currentPlayerPosRef.values.x + deltaDistance * direction[0] * 0.7,10);
+      newY = roundToDecimal(currentPlayerPosRef.values.y + deltaDistance * direction[1] * 0.7,10);
+    } else {
+      newX = roundToDecimal(currentPlayerPosRef.values.x + deltaDistance * direction[0],10);
+      newY =roundToDecimal( currentPlayerPosRef.values.y + deltaDistance * direction[1],10);
+    }
+    console.log(newX)
+    console.log(newY)
 
     let isValid = this.checkPlayerBounds(oldX, oldY, newX, newY);
     if (!isValid.validX && !isValid.validY) {
@@ -119,7 +138,8 @@ export class MapRenderer {
     if (isValid.validY) {
       currentPlayerPosRef.values.y = newY;
     }
-    this.mapRenderRef.setValue({ x: userDisplacement.x - currentPlayerPosRef.values.x * blockSize, y: userDisplacement.y - currentPlayerPosRef.values.y * blockSize  })
+    ////blockSize * Math.floor(cell / this.renderConfig.mapWidth)
+    this.mapRenderRef.setValue({ x: roundToDecimal(userDisplacement.x - currentPlayerPosRef.values.x * blockSize,0), y: roundToDecimal(userDisplacement.y - currentPlayerPosRef.values.y * blockSize,0)  })
     // Animated.spring(this.mapRenderRef, {
     //   toValue: { x: userDisplacement.x - currentPlayerPosRef.values.x * blockSize, y: userDisplacement.y - currentPlayerPosRef.values.y * blockSize  },
     //   useNativeDriver: false,
@@ -169,7 +189,7 @@ export class MapRenderer {
   }
   private teleportRenderedMap(nextPos:PositionValues){
     let nextPosInts = { x: Math.floor(nextPos.x), y: Math.floor(nextPos.y) }; // the -3 and -2 are to center the render on screen
-    if (Math.abs(nextPosInts.x - Math.floor(this.currentPlayerPos.x)) == 0 && Math.abs(nextPosInts.y - Math.floor(this.currentPlayerPos.y)) == 0) {
+    if (Math.abs(nextPosInts.x - Math.floor(this.startingPlayerPos.x)) == 0 && Math.abs(nextPosInts.y - Math.floor(this.startingPlayerPos.y)) == 0) {
       return;
     }
     for (let [key, value] of this.renderedMapSection) {
@@ -185,7 +205,7 @@ export class MapRenderer {
   public moveRenderedMap(nextPos: PositionValues) {
     //this should be called every time the player moves a certain amount
     let nextPosInts = { x: Math.floor(nextPos.x), y: Math.floor(nextPos.y) }; // the -3 and -2 are to center the render on screen
-    if (Math.abs(nextPosInts.x - Math.floor(this.currentPlayerPos.x)) == 0 && Math.abs(nextPosInts.y - Math.floor(this.currentPlayerPos.y)) == 0) {
+    if (Math.abs(nextPosInts.x - Math.floor(this.startingPlayerPos.x)) == 0 && Math.abs(nextPosInts.y - Math.floor(this.startingPlayerPos.y)) == 0) {
       return;
     }
     let inViewCells = [];
@@ -200,11 +220,33 @@ export class MapRenderer {
         }
       }
     }
+    if(this.decorationsMap.has(this.positionToCellNum({x:nextPosInts.x,y:nextPosInts.y}))!=true){
+      if( this.pointMap.get(this.positionToCellNum({x:nextPosInts.x,y:nextPosInts.y}))!=true){
+        this.pointsEarned+=1
+        this.increasePoints(this.pointsEarned)
+        this.pointMap.set(this.positionToCellNum({x:nextPosInts.x,y:nextPosInts.y}),true)
+      }
+    }
+
+
+    //incident handling
+    let isOnAPoint =false
+    for(let point of this.incidentPoint){
+      if(point.x==nextPosInts.x  && point.y==nextPosInts.y){
+        isOnAPoint=true
+      }
+    }
+    if(!isOnAPoint && this.decorationsMap.has(this.positionToCellNum({x:nextPosInts.x,y:nextPosInts.y}))!=true){
+      this.pointMap.set(this.positionToCellNum({x:nextPosInts.x,y:nextPosInts.y}),true)
+      this.swapImage(nextPosInts.x + (nextPosInts.y) * this.renderConfig.mapWidth,6)
+    }
+    
     if(this.isDropping==false){
-      for(let i =0;i<2;i++){
+      for(let i =0;i<3;i++){
         let randomNumX = Math.floor(Math.random()*4.9)-2
         let randomNumY = Math.floor(Math.random()*4.9)-2
-        this.swapImage(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,8)
+        this.swapImage(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,7)
+        this.incidentPoint[i] ={x:nextPosInts.x+randomNumX,y:nextPosInts.y+randomNumY} 
         // this.resetCellXYRef(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth)
         // this.decorationsMap.set(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,2)
         // this.addCellToRender(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth)
@@ -214,6 +256,14 @@ export class MapRenderer {
           this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY+1) * this.renderConfig.mapWidth,7)
           this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY-1) * this.renderConfig.mapWidth,7)
           this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,7)
+          console.log(this.currentPlayerPos.x)
+          console.log(this.currentPlayerPos.y)
+          console.log(this.positionToCellNum({x:this.currentPlayerPos.x,y:this.currentPlayerPos.y}))
+          console.log(this.wholeMap.get(this.positionToCellNum({x:this.currentPlayerPos.x,y:this.currentPlayerPos.y})))
+          if(this.wholeMap.get(this.positionToCellNum({x:this.currentPlayerPos.x,y:this.currentPlayerPos.y}))!=undefined ){
+            console.log("game has ended")
+            sendToDevvit({ type: 'GAME_ENDED',payload: {player_points_earned:this.pointsEarned} });
+          }
           this.isDropping=false
         },2000)
       }
@@ -259,7 +309,7 @@ export class MapRenderer {
       cellsXYRefArr = this.cellTypes.get(cellDecorationType);
     }
     if(!cellWallType && !cellDecorationType) {
-      cellsXYRefArr = this.cellTypes.get(0); //default background rendering
+      cellsXYRefArr = this.cellTypes.get(-1); //default background rendering
     }
     if (cellsXYRefArr == undefined) {
       return [];
