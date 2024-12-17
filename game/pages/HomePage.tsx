@@ -91,11 +91,13 @@ function GameUserInputHandler({initData}:{initData:GET_USER_DATA_RESPONSE_PAYLOA
 
   const incrementIndividualPoints = (amount:number) => {
     setPlayer({points:amount});
-
-    if (player.team == initData.team1_name) {
-      incrementTeamPoints(initData.team1_name,initData.team1_points+amount);
+    if( initData.previous_player_points>amount){
+      return
+    }
+    if (player.team == initData.team1_name ) {
+      incrementTeamPoints(initData.team1_name,initData.team1_points+amount-initData.previous_player_points);
     } else {
-      incrementTeamPoints(initData.team2_name,initData.team2_points+amount);
+      incrementTeamPoints(initData.team2_name,initData.team2_points+amount-initData.previous_player_points);
     }
   };
 
@@ -131,8 +133,8 @@ function GameUserInputHandler({initData}:{initData:GET_USER_DATA_RESPONSE_PAYLOA
         {/* <MainGameTimer /> */}
         {/* <UserInputManager /> */}
         <UserInputManager/>
-        <GameUI team1_name={teamA.name} team2_name={teamB.name} team1_points={teamA.totalPoints} team2_points={teamB.totalPoints} team={player.team} points={player.points} ></GameUI>
-        <div style={{position:'absolute',zIndex:1000, width:30,height:30,backgroundColor:"green", left:window.innerWidth/2+15, top:window.innerHeight/2+15}}></div>
+        <GameUI team1_name={teamA.name} team2_name={teamB.name} team1_points={teamA.totalPoints} team2_points={teamB.totalPoints} team={player.team} points={player.points} previousBest= {initData.previous_player_points} ></GameUI>
+        <div style={{position:'absolute',zIndex:1000, width:window.innerWidth/50,height:window.innerWidth/50,backgroundColor:"red", left:window.innerWidth/2-window.innerWidth/50, top:window.innerHeight/2-window.innerWidth/50}}></div>
         <animated.div
          style={{
           position:'absolute',

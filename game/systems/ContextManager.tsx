@@ -49,6 +49,7 @@ export interface GameUIParams {
 }
 export interface Player {
   team: string
+  previousBest:number
   points: SpringValue<number>
 }
 export interface Team {

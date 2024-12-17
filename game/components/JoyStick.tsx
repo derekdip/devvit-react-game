@@ -19,8 +19,8 @@ export function JoyStick({ currentTouch, joyStickOrigin }: JoyStickParams) {
           position: "absolute",
           left: joyStickOrigin.x,
           top: joyStickOrigin.y,
-          height: 50,
-          width: 50,
+          height: "5%",
+          width: "5%",
           borderRadius: 20,
           backgroundColor: `rgba(0,10,110,${joyStickOrigin.visible})`,
           zIndex: 4,
@@ -33,9 +33,9 @@ export function JoyStick({ currentTouch, joyStickOrigin }: JoyStickParams) {
            x:currentTouch.x,
            y:currentTouch.y,
           //transform: {translateX:currentTouch.x},{translateY:currentTouch.y},
-          width: 30,
+          width: "5%",
           borderRadius: 20,
-          backgroundColor: `rgba(200,100,0,${joyStickOrigin.visible})`,
+          backgroundColor: `rgba(200,10,0,${joyStickOrigin.visible})`,
           zIndex: 40,
         }}></animated.div>
     </>

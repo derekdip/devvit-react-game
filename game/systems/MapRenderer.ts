@@ -109,10 +109,14 @@ export class MapRenderer {
         // this.decorationsMap.set(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,2)
         // this.addCellToRender(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth)
         setTimeout(()=>{
+          this.swapRefType(nextPosInts.x+randomNumX-2  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,25)
           this.swapRefType(nextPosInts.x+randomNumX-1  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,25)
           this.swapRefType(nextPosInts.x+randomNumX+1  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,25)
+          this.swapRefType(nextPosInts.x+randomNumX+2  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,25)
+          this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY+2) * this.renderConfig.mapWidth,25)
           this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY+1) * this.renderConfig.mapWidth,25)
           this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY-1) * this.renderConfig.mapWidth,25)
+          this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY-2) * this.renderConfig.mapWidth,25)
           this.swapRefType(nextPosInts.x+randomNumX  + (nextPosInts.y+randomNumY) * this.renderConfig.mapWidth,25)
           if(this.wholeMap.get(this.positionToCellNum({x:this.currentPlayerPos.x,y:this.currentPlayerPos.y}))!=undefined ){
             console.log("game has ended")

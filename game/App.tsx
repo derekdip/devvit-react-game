@@ -71,7 +71,7 @@ export const App = () => {
     <text style={{color:"orange"}}> {initialData.team2_points} </text> */}
 
     {/* <Example/> */}
-    {getPage(page,{initData:initialData})}
-    {/* {initData && getPage(page,{initData:initData})} */}
+    {/* {getPage(page,{initData:initialData})} */}
+    {initData && getPage(page,{initData:initData})}
     </div>;
 };
