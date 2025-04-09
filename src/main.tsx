@@ -34,7 +34,7 @@ Devvit.addMenuItem({
     const subreddit = await reddit.getCurrentSubreddit();
     const post = await reddit.submitPost({
       // Title of the post. You'll want to update!
-      title: 'React Game',
+      title: 'DOGS VS CATS',
       subredditName: subreddit.name,
       preview: <Preview />,
     });
@@ -125,7 +125,7 @@ Devvit.addCustomPostType({
     //   await redis.set("team1","Team Dogs")
     //   await redis.set("team2","Team Cats")
     //   console.log("resetting game")
-    // }
+    //}
     async function renderTeamPoints(){
       await getTeam1Points()
       await getTeam2Points()
